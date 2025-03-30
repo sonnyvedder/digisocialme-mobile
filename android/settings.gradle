@@ -1,0 +1,46 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+
+    plugins {
+        id 'com.android.application' version '8.1.0'
+        id 'com.android.library' version '8.1.0'
+        id 'org.jetbrains.kotlin.android' version '1.8.10'
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+include ':app'
+
+def flutterProjectRoot = rootProject.projectDir.parentFile.toPath()
+
+// This allows Flutter to find the plugin dependency files
+def plugins = new Properties()
+def flutterPropertiesFile = new File(flutterProjectRoot.toFile(), '.flutter-plugins')
+if (flutterPropertiesFile.exists()) {
+    flutterPropertiesFile.withReader('UTF-8') { reader -> plugins.load(reader) }
+}
+
+// Load Flutter SDK path from local.properties
+def localProperties = new Properties()
+def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader -> localProperties.load(reader) }
+}
+
+// Configure Flutter SDK
+gradle.beforeProject { project ->
+    project.extensions.add("flutter", [
+        sdk: localProperties.getProperty('flutter.sdk')
+    ])
+}
